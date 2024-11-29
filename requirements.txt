@@ -1,0 +1,5 @@
+google-auth>=2.36.0
+gspread>=6.1.4
+selenium>=4.11.2
+python-dotenv>=1.0.1
+tqdm>=4.66.2

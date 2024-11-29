@@ -1,0 +1,8 @@
+# Pythonバイトコードを除外
+*.pyc
+*.pyo
+__pycache__/
+
+# 秘匿情報を除外
+.env
+adept-*.json
