@@ -68,7 +68,9 @@ def budget_comparison(saturday_count, monthly_budget_element, remaining_budget_e
     
     weekly_budget_from_month = monthly_budget_element / saturday_count
     
-    if weekly_budget_from_month > remaining_budget_element_per_week:
+    if weekly_budget_from_month == remaining_budget_element_per_week:
+        return '🌤️'
+    elif weekly_budget_from_month > remaining_budget_element_per_week:
         return '🌞'
     else:
         return '☔'
