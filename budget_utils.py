@@ -106,9 +106,10 @@ def emoji_from_remaining_budget_per_week(monthly_budget, remaining_budget_per_we
     }
 
 """LINEのメッセージを作成する"""
-def make_line_messages(remaining_budget, remaining_budget_per_week, emoji, year, month):
+def make_line_messages(remaining_budget, remaining_budget_per_week, emoji, now):
+    day_of_week = ['月', '火', '水', '木', '金', '土', '日'][now.weekday()]
     remaining_budget_message = f"""
-        {year}年{month:2}月
+        {now.strftime(f"%Y年%m月%d日({day_of_week})")}
         残り予算をお知らせ
 
         🛒食日費: {format_currency(remaining_budget.food)}
@@ -117,7 +118,7 @@ def make_line_messages(remaining_budget, remaining_budget_per_week, emoji, year,
         👩ママお小遣い: {format_currency(remaining_budget.mama_free)}
     """
 
-    remaining_saturdays_count = remaining_saturdays(year, month)
+    remaining_saturdays_count = remaining_saturdays(now.year, now.month)
     remaining_budget_per_week_message = ''
     if remaining_saturdays_count == 0:
         remaining_budget_per_week_message = """

@@ -42,5 +42,5 @@ print("Done Calculating Budget")
 # LINE通知
 print("Start Notifying LINE")
 emoji = emoji_from_remaining_budget_per_week(monthly_budget, remaining_budget_per_week, now.year, now.month)
-send_line_notification(make_line_messages(remaining_budget, remaining_budget_per_week, emoji, now.year, now.month), access_token)
+send_line_notification(make_line_messages(remaining_budget, remaining_budget_per_week, emoji, now), access_token)
 print("Done Notifying LINE")
