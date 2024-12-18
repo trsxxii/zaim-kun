@@ -25,22 +25,27 @@ print("Start Crawling Zaim")
 crawler = ZaimCrawler(email, password)
 zaim_data = amount_from_zaim_data(crawler.get_data(now.year, now.month))
 crawler.close()
+print(zaim_data)
 print("Done Crawling Zaim")
 
 # Google Spreadsheet Fetcher
 print("Start Fetching Google Spreadsheet Data")
 fetcher = GSFetcher(service_account_file=service_account_file, spreadsheet_key=spreadsheet_key)
 monthly_budget = amount_from_budget_data(fetcher.get_budget(now.year, now.month))
+print(monthly_budget)
 print("Done Fetching Google Spreadsheet Data")
 
 # 予算計算
 print("Start Calculating Budget")
 remaining_budget = remaining_budget(zaim_data, monthly_budget)
 remaining_budget_per_week = remaining_budget_per_week(remaining_budget, now.year, now.month)
+print(remaining_budget)
+print(remaining_budget_per_week)
 print("Done Calculating Budget")
 
 # LINE通知
 print("Start Notifying LINE")
 emoji = emoji_from_remaining_budget_per_week(monthly_budget, remaining_budget_per_week, now.year, now.month)
 send_line_notification(make_line_messages(remaining_budget, remaining_budget_per_week, emoji, now), access_token)
+print(emoji)
 print("Done Notifying LINE")
