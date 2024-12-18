@@ -91,10 +91,10 @@ def remaining_budget_per_week(remaining_budget, year, month):
         return remaining_budget
     else:
         return AmountData(
-            remaining_budget.food / remaining_saturdays_count,
-            remaining_budget.leisure / remaining_saturdays_count,
-            remaining_budget.papa_free / remaining_saturdays_count,
-            remaining_budget.mama_free / remaining_saturdays_count
+            remaining_budget.food if remaining_budget.food < 0 else remaining_budget.food / remaining_saturdays_count,
+            remaining_budget.leisure if remaining_budget.leisure < 0 else remaining_budget.leisure / remaining_saturdays_count,
+            remaining_budget.papa_free if remaining_budget.papa_free < 0 else remaining_budget.papa_free / remaining_saturdays_count,
+            remaining_budget.mama_free if remaining_budget.mama_free < 0 else remaining_budget.mama_free / remaining_saturdays_count
         )
 
 """1週間毎に使える予算から絵文字マップを作成する"""
