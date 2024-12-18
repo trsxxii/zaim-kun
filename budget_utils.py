@@ -1,5 +1,4 @@
 import calendar
-import textwrap
 from datetime import datetime, timedelta
 from constants import *
 from dataclasses import dataclass
@@ -107,35 +106,257 @@ def emoji_from_remaining_budget_per_week(monthly_budget, remaining_budget_per_we
     }
 
 """LINEのメッセージを作成する"""
-def make_line_messages(remaining_budget, remaining_budget_per_week, emoji, now):
+def make_line_message_data(remaining_budget, remaining_budget_per_week, emoji, now):
     day_of_week = ['月', '火', '水', '木', '金', '土', '日'][now.weekday()]
-    remaining_budget_message = f"""
-        {now.strftime(f"%Y年%m月%d日({day_of_week})")}
-        残り予算をお知らせ
-
-        🛒食日費: {format_currency(remaining_budget.food)}
-        🚗娯楽費: {format_currency(remaining_budget.leisure)}
-        👨パパお小遣い: {format_currency(remaining_budget.papa_free)}
-        👩ママお小遣い: {format_currency(remaining_budget.mama_free)}
-    """
-
     remaining_saturdays_count = remaining_saturdays(now.year, now.month)
-    remaining_budget_per_week_message = ''
-    if remaining_saturdays_count == 0:
-        remaining_budget_per_week_message = """
-            今月はもう週末がないよ。残りは慎重に使おうね
-        """
-    else:
-        remaining_budget_per_week_message = f"""
-            今月は残り{remaining_saturdays_count}回週末があるよ。
-            1週間毎に使える予算はコチラ！
+    flex_message_data = {
+        "type": "bubble",
+        "body": {
+            "type": "box",
+            "layout": "vertical",
+            "contents": [
+                {
+                    "type": "text",
+                    "text": f"{now.strftime(f"%Y年%m月%d日({day_of_week})")}",
+                    "weight": "bold",
+                    "color": "#1DB446",
+                    "size": "sm"
+                },
+                {
+                    "type": "text",
+                    "text": "残予算のお知らせ",
+                    "weight": "bold",
+                    "size": "xl",
+                    "margin": "md"
+                },
+                {
+                    "type": "text",
+                    "text": "今月はもう週末がないよ" if remaining_saturdays_count == 0 else f"今月は残り{remaining_saturdays_count}回週末があるよ",
+                    "size": "xs",
+                    "color": "#aaaaaa",
+                    "wrap": True
+                },
+                {
+                    "type": "separator",
+                    "margin": "xxl"
+                },
+                {
+                    "type": "box",
+                    "layout": "vertical",
+                    "margin": "xxl",
+                    "spacing": "sm",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": "今月末までの予算",
+                            "size": "md"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "🛒食日費",
+                                    "size": "sm",
+                                    "color": "#555555",
+                                    "flex": 0
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"{format_currency(remaining_budget.food)}",
+                                    "size": "sm",
+                                    "color": "#111111",
+                                    "align": "end"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "🚗娯楽費",
+                                    "size": "sm",
+                                    "color": "#555555",
+                                    "flex": 0
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"{format_currency(remaining_budget.leisure)}",
+                                    "size": "sm",
+                                    "color": "#111111",
+                                    "align": "end"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "👨パパお小遣い",
+                                    "size": "sm",
+                                    "color": "#555555",
+                                    "flex": 0
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"{format_currency(remaining_budget.papa_free)}",
+                                    "size": "sm",
+                                    "color": "#111111",
+                                    "align": "end"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "box",
+                            "layout": "horizontal",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "👩ママお小遣い",
+                                    "size": "sm",
+                                    "color": "#555555",
+                                    "flex": 0
+                                },
+                                {
+                                    "type": "text",
+                                    "text": f"{format_currency(remaining_budget.mama_free)}",
+                                    "size": "sm",
+                                    "color": "#111111",
+                                    "align": "end"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "type": "separator",
+                    "margin": "xxl"
+                }
+            ]
+        },
+        "styles": {
+            "footer": {
+                "separator": True
+            }
+        }
+    }
 
-            🛒食日費: {format_currency(remaining_budget_per_week.food)} {emoji[FOOD]}
-            🚗娯楽費: {format_currency(remaining_budget_per_week.leisure)} {emoji[LEISURE]}
-            👨パパお小遣い: {format_currency(remaining_budget_per_week.papa_free)} {emoji[PAPA_FREE]}
-            👩ママお小遣い: {format_currency(remaining_budget_per_week.mama_free)} {emoji[MAMA_FREE]}
-        """
-    
-    return [textwrap.dedent(remaining_budget_message), textwrap.dedent(remaining_budget_per_week_message)]
+    if remaining_saturdays_count != 0:
+        additional_remaining_data = [
+            {
+                "type": "box",
+                "layout": "vertical",
+                "margin": "xxl",
+                "spacing": "sm",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "1週間毎に使える予算",
+                        "size": "md"
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "🛒食日費",
+                                "size": "sm",
+                                "color": "#555555",
+                                "flex": 0
+                            },
+                            {
+                                "type": "text",
+                                "text": f"{format_currency(remaining_budget_per_week.food)} {emoji[FOOD]}",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "🚗娯楽費",
+                                "size": "sm",
+                                "color": "#555555",
+                                "flex": 0
+                            },
+                            {
+                                "type": "text",
+                                "text": f"{format_currency(remaining_budget_per_week.leisure)} {emoji[LEISURE]}",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "👨パパお小遣い",
+                                "size": "sm",
+                                "color": "#555555",
+                                "flex": 0
+                            },
+                            {
+                                "type": "text",
+                                "text": f"{format_currency(remaining_budget_per_week.papa_free)} {emoji[PAPA_FREE]}",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "👩ママお小遣い",
+                                "size": "sm",
+                                "color": "#555555",
+                                "flex": 0
+                            },
+                            {
+                                "type": "text",
+                                "text": f"{format_currency(remaining_budget_per_week.mama_free)} {emoji[MAMA_FREE]}",
+                                "size": "sm",
+                                "color": "#111111",
+                                "align": "end"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+        flex_message_data["body"]["contents"].extend(additional_remaining_data)
 
-    
+    additional_footer_data = [
+        {
+            "type": "separator",
+            "margin": "xxl",
+            "color": "#FFFFFFFF"
+        },
+        {
+            "type": "text",
+            "text": "残りは慎重に使おうね",
+            "size": "xs",
+            "color": "#aaaaaa",
+            "flex": 0
+        }
+    ]
+    flex_message_data["body"]["contents"].extend(additional_footer_data)
+    return flex_message_data
