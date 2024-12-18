@@ -65,16 +65,14 @@ def convert_to_int(value):
 """月間予算と1週間毎の予算を比較して絵文字を返却する"""
 def budget_comparison(saturday_count, monthly_budget_element, remaining_budget_element_per_week):
     if remaining_budget_element_per_week <= 0:
-        return '⚡'
+        return '🚫'
     
     weekly_budget_from_month = monthly_budget_element / saturday_count
     
-    if weekly_budget_from_month == remaining_budget_element_per_week:
-        return '🌤️'
-    elif weekly_budget_from_month < remaining_budget_element_per_week:
+    if weekly_budget_from_month <= remaining_budget_element_per_week:
         return '🌞'
     else:
-        return '☔'
+        return '🌀'
 
 """月間予算と使った金額から残りの予算を計算する"""
 def remaining_budget(zaim, monthly_budget):
