@@ -13,11 +13,12 @@ class AmountData:
 
 """Zaimで取得した使った金額をAmountDataに変換する"""
 def amount_from_zaim_data(data):
+    not_include = '常に含めない'
     return AmountData(
-        sum(item['amount'] for item in data if item['category'] == FOOD),
-        sum(item['amount'] for item in data if item['category'] == LEISURE),
-        sum(item['amount'] for item in data if item['category'] == PAPA_FREE),
-        sum(item['amount'] for item in data if item['category'] == MAMA_FREE)
+        sum(item['amount'] for item in data if item['category'] == FOOD and item['count'] != not_include),
+        sum(item['amount'] for item in data if item['category'] == LEISURE and item['count'] != not_include),
+        sum(item['amount'] for item in data if item['category'] == PAPA_FREE and item['count'] != not_include),
+        sum(item['amount'] for item in data if item['category'] == MAMA_FREE and item['count'] != not_include)
     )
 
 """Spreadsheetで取得した月間予算をAmountDataに変換する"""
