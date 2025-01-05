@@ -1,10 +1,14 @@
+# !!!!
+# 実行前に必ずDockerを立ち上げること
+# !!!!
+
 # ==== 変数を定義 ====
 $ProjectId = "adept-bond-386013"                        # Google Cloud プロジェクト ID
 $Region = "asia-northeast1"                             # Cloud Run サービスのリージョン
 $RepositoryName = "zaim-checker-repo"                   # Artifact Registry のリポジトリ名
 $ImageName = "zaim-checker"                             # Docker イメージの名前
 $Tag = "latest"                                         # Docker イメージのタグ
-$JobName = "zaim-checker-run-job"               # Cloud Run Jobs のジョブ名
+$JobName = "zaim-checker-run-job"                       # Cloud Run Jobs のジョブ名
 $EnvSecretName = "projects/741240541320/secrets/zaim-checker-secret"            # Secret Manager に登録された .env シークレット名
 $SaSecretName = "projects/741240541320/secrets/zaim-checker-service-account"    # Secret Manager に登録されたサービスアカウント JSON シークレット名
 $Image = "$Region-docker.pkg.dev/$ProjectId/$RepositoryName/${ImageName}:$Tag"

@@ -26,7 +26,7 @@ class GSFetcher:
         header_row = sheet.row_values(2)
 
         # 指定月の文字列
-        search_string = f"{month:2}月"
+        search_string = f"{month}月"
 
         # 最初に一致する文字列で検索して列を特定する
         column_index = None
